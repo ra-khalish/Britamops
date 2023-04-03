@@ -1,14 +1,14 @@
 apiVersion: privatecloud.mendix.com/v1alpha1
-kind: BritamApp
+kind: MendixApp
 metadata:
-  name: britamapp
+  name: britamapps
 spec:
   database: # Specification of Database CR
     servicePlan: britam-postgres
   storage: # Specification of Storage CR
     servicePlan: britam-minio
   mendixRuntimeVersion: 9.12.3.46747 # Mendix version to use for placeholder runtime image
-  sourceURL: http://172.18.61.96:9000/britamstorage/britam-project/BRI_ITAM_1.0.0.630.mda # URL of App's source MDA
+  sourceURL: http://172.18.61.96:9000/britam-project/BRI_ITAM_1.0.6.681.mda # URL of App's source MDA
   #  appURL: example-mendixapp.k8s-cluster.example.com # URL to access the app
   #  tls: # Optional, can be omitted : set a custom TLS configuration, overriding the default operator configuration
   # Enable or disable TLS for the app
@@ -25,11 +25,11 @@ spec:
   #      -----BEGIN PRIVATE KEY-----
   #      [...]
   #      -----END PRIVATE KEY-----
-  replicas: 1 # Number of replicas, set to 0 to stop all replicas
+  replicas: 2 # Number of replicas, set to 0 to stop all replicas
   resources: # Optional, can be omitted : set resources for Mendix Runtime container
     limits: # Upper limit - process will be stopped if it tries to use more
-      cpu: 500m # 500 millicores - half of a vCPU
-      memory: 512Mi # 512 megabytes - suitable for small-scale non-production apps
+      cpu: 2000m # 500 millicores - half of a vCPU
+      memory: 4096Mi # 512 megabytes - suitable for small-scale non-production apps
     requests: # Lower limit - needs at least these resources
       cpu: 250m
       memory: 256Mi
@@ -61,6 +61,10 @@ spec:
   #  ingressPath: "/" # Optional, can be omitted : specify the Ingress path
   #  ingressPathType: ImplementationSpecific # Optional, can be omitted : specify the Ingress pathType
   runtime: # Configuration of the Mendix Runtime
+    runtimeLicense:
+      type: offline
+      id: 35e761f4-f1bf-450d-97a9-b08e938f3ef4
+      key: LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgp7IklzUHJvZHVjdGlvbiI6ZmFsc2UsIkNvbXBvbmVudHMiOlsiTW9iaWxlIl0sIkNvbXBhbnkiOiJCYW5rIFJha3lhdCBJbmRvbmVzaWEiLCJTZXBhcmF0ZUFub255bW91c1VzZXJzIjp0cnVlLCJFeHBpcmF0aW9uRGF0ZSI6MTc3MzI3MzYwMDAwMCwiVXNlckxpbWl0YXRpb25zIjpbeyJMaW1pdGF0aW9uVHlwZSI6Ik5hbWVkIiwiQW1vdW50VHlwZSI6IlVubGltaXRlZCJ9LHsiTGltaXRhdGlvblR5cGUiOiJDb25jdXJyZW50IiwiQW1vdW50VHlwZSI6IlVubGltaXRlZCJ9LHsiTGltaXRhdGlvblR5cGUiOiJDb25jdXJyZW50QW5vbnltb3VzIiwiQW1vdW50VHlwZSI6IlVubGltaXRlZCJ9XSwiTGljZW5zZUlEIjoiN1hKVyt5d1VWRGcwSW14VTN2TTFsWlNsYU9ZPSIsIkxpY2Vuc2VUeXBlIjoiU3Vic2NyaXB0aW9uIiwiUnVudGltZU1vZGUiOiJQcm9kdWN0aW9uIn0KLS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogQkNQRyB2MS42NAoKaVFKUEJBRUJBZ0E1QlFKa0pCOVVNaHhOWlc1a2FYZ2dUR2xqWlc1elpTQlRhV2R1YVc1bklFdGxlU0E4YkdsagpaVzV6YVc1blFHMWxibVJwZUM1amIyMCtBQW9KRUpqaHpNT2V3TlJsOXFVUC9SNlFna2JEZ3BPTlVhdkFDK0VCCmQ4QXR2OGpIRkpuUGNpVENnb2ZzMGg5ZDRwVU9udW5YQXVyMWNtWnc1dDJSMkc1YURtbUJXckwvSVM3R2VQK0wKMVFVQTJvdkRTNUdLMWNkU21KZ2I2ajB3bjdjSUJYQy9WZzBXUzRNQmlzbGQyZUgyNHVXcmMzd1NKb1lweHA2UApVdklTQmpwbDlOQUhST3BTUDFKUzdhRnovZHVzOEthY29ZWFR6aUJhUnVhTjVzblRGZGtSOCtrY2ZEMmEycVRqClJ1QTYzVlhSNHdVWkZFOVRjYWtJcHZpL29mSWNxL3Faekl3YUducHBiYXJnbHhOQTBFTC9ZcWJEekJ1NzFPT1UKYmJ6c0JybVorMWIrYzA0Sm5kRWNxLzhMSFdtV0FrQXcrNVFnZHE4REZwZUxweG1NcENjN1pQeXp0b244SXdHZQo0NVVNN21LeWZ6Ly9haVFjU0EvMjdXc0RweFQ0ZmxqVGgxSUUrNGVzK0ovcHVEaHRpYTlCLzdVUm0zT1plT0VVCkRQSGM2Z3dSTXludkgxU3cyWFlUTnRaQ1k1TDQxRnB5bldtMnBIL3VDQjU1blUvc0wvR0VaV1laTzJaM0UwMWoKQStnNlBBYnFrZzZYSU8xSDU5cTdYU0FMY1VGZGFYUGtXbmtTMUJyU3BoK2N4a1luYk1vT0d2OEYzV3V5WDJOMgp2Vk9tYnhobUJNWlpzb2J2L0M5YzZlaXF6NEhqS29POCt0SS9SVjhzczByMzliMnRMQVYvNjFETlUzMzQ5OUtwCnhlT3FRR2c5OHNpdWh0LzNMNUhrelUxbWpQWHg5QTc4SWFOSzVUcWZYSHN0RDBPbHpvbGNETU9RSDd5WnZtazYKd1BsN2VmSDhhdGpsVkhFNlRFQ3kzREFqCj1VNkY4Ci0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQo=
     logAutosubscribeLevel: INFO # Default logging level
     mxAdminPassword: V2VsYzBtZSE= # base64 encoded password for MendixAdmin user. In this example, 'Welc0me!'; can be left empty keep password unchanged
     debuggerPassword: V2VsYzBtZSE= # base64 encoded password for debuggerPassword. In this example, 'Welc0me!';
@@ -68,6 +72,8 @@ spec:
     logLevels: # Optional, can be omitted : set custom log levels for specific nodes
       NodeOne: CRITICAL
       NodeTwo: DEBUG
+      #REST Consume: TRACE
+      #REST Publish: TRACE
     microflowConstants: # Optional, can be omitted : set values for microflow constants
       MyFirstModule.Constant: "1234"
       Atlas_UI_Resources.Atlas_UI_Resources_Version: "2.5.4"
@@ -92,8 +98,8 @@ spec:
 #        #  secretKeyRef:
 #        #    name: proxy-secret
 #        #    key: java-proxy-secret
-#      - name: JAVA_TOOL_OPTIONS # name of the environment variable
-#        value: -Dhttp.proxyHost=10.0.0.100 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=10.0.0.100 -Dhttps.proxyPort=8443 -Dhttp.nonProxyHosts="localhost|host.example.com"
+      - name: JAVA_TOOL_OPTIONS # name of the environment variable
+        value: -Xms128m -Xmx4g #-Dhttp.proxyHost=10.0.0.100 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=10.0.0.100 -Dhttps.proxyPort=8443 -Dhttp.nonProxyHosts="localhost|host.example.com"
 #    clientCertificates: # Optional, can be omitted : set client certificates for TLS authentication
 #      - key: Q0VSVElGSUNBVEU= # base64-encoded PKCS12 certificate
 #        password: # base64-encoded password for the certificate, cannot be empty
@@ -101,10 +107,10 @@ spec:
 #        - "www.example.com"
 #        - "service.www.example.com"
 # All custom Mendix Runtime parameters go here, in JSON format; validated and applied by the mx-m2ee-sidecar container
-#    customConfiguration: |-
-#      {
-#        "ApplicationRootUrl": "https://app.this.id/fsm"
-#      }
+    customConfiguration: |-
+      {
+        "ApplicationRootUrl": "http://mendix.britam.bri.co.id"
+      }
 #  runtimeMetricsConfiguration: # Optional, can be omitted : set Runtime metrics configuration
 #    mode: native # Metrics collection mode : native or compatibility
 #    interval: "PT1M" # Optional, can be omitted : set Prometheus scrape interval
